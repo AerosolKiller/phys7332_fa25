@@ -1,0 +1,259 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 750px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 750px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "lightblue", "id": "PHTH 1260", "label": "PHTH 1260", "shape": "dot", "size": 12, "title": "The American Healthcare System"}, {"color": "lightblue", "id": "PHTH 1261", "label": "PHTH 1261", "shape": "dot", "size": 12, "title": "Comparative Healthcare Systems"}, {"color": "lightblue", "id": "PHTH 1270", "label": "PHTH 1270", "shape": "dot", "size": 12, "title": "Introduction to Global Health"}, {"color": "lightblue", "id": "PHTH 2210", "label": "PHTH 2210", "shape": "dot", "size": 12, "title": "Foundations of Biostatistics"}, {"color": "lightblue", "id": "PHTH 2300", "label": "PHTH 2300", "shape": "dot", "size": 12, "title": "Communication Skills for the Health Professions"}, {"color": "lightblue", "id": "PHTH 2301", "label": "PHTH 2301", "shape": "dot", "size": 12, "title": "Communication Skills for the Health Professions\u2014Global"}, {"color": "lightblue", "id": "PHTH 2350", "label": "PHTH 2350", "shape": "dot", "size": 12, "title": "Community and Public Health"}, {"color": "lightblue", "id": "PHTH 2351", "label": "PHTH 2351", "shape": "dot", "size": 12, "title": "Community and Public Health - Global"}, {"color": "lightblue", "id": "PHTH 2414", "label": "PHTH 2414", "shape": "dot", "size": 12, "title": "Environmental Health"}, {"color": "lightblue", "id": "PHTH 2515", "label": "PHTH 2515", "shape": "dot", "size": 12, "title": "Healthcare Policy and Administration"}, {"color": "lightblue", "id": "PHTH 2616", "label": "PHTH 2616", "shape": "dot", "size": 12, "title": "Rural Health: An Interdisciplinary Seminar"}, {"color": "lightblue", "id": "PHTH 2991", "label": "PHTH 2991", "shape": "dot", "size": 12, "title": "Research in Public Health"}, {"color": "lightblue", "id": "PHTH 4120", "label": "PHTH 4120", "shape": "dot", "size": 12, "title": "Global Perspectives on Discrimination and Health"}, {"color": "lightblue", "id": "PHTH 4202", "label": "PHTH 4202", "shape": "dot", "size": 12, "title": "Principles of Epidemiology in Medicine and Public Health"}, {"color": "lightblue", "id": "PHTH 4511", "label": "PHTH 4511", "shape": "dot", "size": 12, "title": "Healthcare Management"}, {"color": "lightblue", "id": "PHTH 4515", "label": "PHTH 4515", "shape": "dot", "size": 12, "title": "Critical Issues in Health and Public Health Policy"}, {"color": "lightblue", "id": "PHTH 4540", "label": "PHTH 4540", "shape": "dot", "size": 12, "title": "Health Education and Program Planning"}, {"color": "lightblue", "id": "PHTH 4602", "label": "PHTH 4602", "shape": "dot", "size": 12, "title": "Private Guns, Public Health"}, {"color": "lightblue", "id": "PHTH 4616", "label": "PHTH 4616", "shape": "dot", "size": 12, "title": "Addressing Rural Health Inequities"}, {"color": "lightblue", "id": "PHTH 4717", "label": "PHTH 4717", "shape": "dot", "size": 12, "title": "Advancing Health Justice Through the Law"}, {"color": "lightblue", "id": "PHTH 4818", "label": "PHTH 4818", "shape": "dot", "size": 12, "title": "Let\u2019s Talk About Sex: Exploring Key Topics and Current Issues in Sexual and Reproductive Health"}, {"color": "lightblue", "id": "PHTH 5120", "label": "PHTH 5120", "shape": "dot", "size": 12, "title": "Race, Ethnicity, and Health in the United States"}, {"color": "lightblue", "id": "PHTH 5202", "label": "PHTH 5202", "shape": "dot", "size": 12, "title": "Introduction to Epidemiology"}, {"color": "lightblue", "id": "PHTH 5210", "label": "PHTH 5210", "shape": "dot", "size": 12, "title": "Biostatistics in Public Health"}, {"color": "lightblue", "id": "PHTH 5212", "label": "PHTH 5212", "shape": "dot", "size": 12, "title": "Public Health Administration and Policy"}, {"color": "lightblue", "id": "PHTH 5214", "label": "PHTH 5214", "shape": "dot", "size": 12, "title": "Environmental Health"}, {"color": "lightblue", "id": "PHTH 5222", "label": "PHTH 5222", "shape": "dot", "size": 12, "title": "Health Advocacy"}, {"color": "lightblue", "id": "PHTH 5226", "label": "PHTH 5226", "shape": "dot", "size": 12, "title": "Management and Leadership in Public Health and Healthcare"}, {"color": "lightblue", "id": "PHTH 5230", "label": "PHTH 5230", "shape": "dot", "size": 12, "title": "Global Health"}, {"color": "lightblue", "id": "PHTH 5232", "label": "PHTH 5232", "shape": "dot", "size": 12, "title": "Evaluating Healthcare Quality"}, {"color": "lightblue", "id": "PHTH 5234", "label": "PHTH 5234", "shape": "dot", "size": 12, "title": "Economic Perspectives on Health Policy"}, {"color": "lightblue", "id": "PHTH 5236", "label": "PHTH 5236", "shape": "dot", "size": 12, "title": "Food, Nutrition, and Health"}, {"color": "lightblue", "id": "PHTH 5300", "label": "PHTH 5300", "shape": "dot", "size": 12, "title": "Project Management in Public Health"}, {"color": "lightblue", "id": "PHTH 5310", "label": "PHTH 5310", "shape": "dot", "size": 12, "title": "Budget Principles in Public Health"}, {"color": "lightblue", "id": "PHTH 5320", "label": "PHTH 5320", "shape": "dot", "size": 12, "title": "Grant Writing in Public Health"}, {"color": "lightblue", "id": "PHTH 5350", "label": "PHTH 5350", "shape": "dot", "size": 12, "title": "Using SAS in Public Health Research"}, {"color": "lightblue", "id": "PHTH 5360", "label": "PHTH 5360", "shape": "dot", "size": 12, "title": "AI at the Intersection of Health and Society"}, {"color": "lightblue", "id": "PHTH 5540", "label": "PHTH 5540", "shape": "dot", "size": 12, "title": "Health Education and Program Planning"}, {"color": "lightblue", "id": "PHTH 5560", "label": "PHTH 5560", "shape": "dot", "size": 12, "title": "Public and Community Health Program Evaluation"}, {"color": "lightblue", "id": "PHTH 5603", "label": "PHTH 5603", "shape": "dot", "size": 12, "title": "Qualitative Methods"}, {"color": "lightblue", "id": "PHTH 6130", "label": "PHTH 6130", "shape": "dot", "size": 12, "title": "Public Health Technologies: Ethics and Equity"}, {"color": "lightblue", "id": "PHTH 6200", "label": "PHTH 6200", "shape": "dot", "size": 12, "title": "Principles and History of Urban Health"}, {"color": "lightblue", "id": "PHTH 6202", "label": "PHTH 6202", "shape": "dot", "size": 12, "title": "Intermediate Epidemiology"}, {"color": "lightblue", "id": "PHTH 6204", "label": "PHTH 6204", "shape": "dot", "size": 12, "title": "Society, Behavior, and Health"}, {"color": "lightblue", "id": "PHTH 6208", "label": "PHTH 6208", "shape": "dot", "size": 12, "title": "Foundations of Community Health Assessment"}, {"color": "lightblue", "id": "PHTH 6210", "label": "PHTH 6210", "shape": "dot", "size": 12, "title": "Applied Regression Analysis"}, {"color": "lightblue", "id": "PHTH 6224", "label": "PHTH 6224", "shape": "dot", "size": 12, "title": "Social Epidemiology"}, {"color": "lightblue", "id": "PHTH 6320", "label": "PHTH 6320", "shape": "dot", "size": 12, "title": "Qualitative Methods in Health and Illness"}, {"color": "lightblue", "id": "PHTH 6400", "label": "PHTH 6400", "shape": "dot", "size": 12, "title": "Principles of Population Health 1"}, {"color": "lightblue", "id": "PHTH 6410", "label": "PHTH 6410", "shape": "dot", "size": 12, "title": "Principles of Population Health 2"}, {"color": "lightblue", "id": "PHTH 6440", "label": "PHTH 6440", "shape": "dot", "size": 12, "title": "Advanced Methods in Biostatistics"}, {"color": "lightblue", "id": "PHTH 6800", "label": "PHTH 6800", "shape": "dot", "size": 12, "title": "Causal Inference in Public Health Research"}, {"color": "lightblue", "id": "PHTH 6801", "label": "PHTH 6801", "shape": "dot", "size": 12, "title": "Causal Inference 1"}, {"color": "lightblue", "id": "PHTH 6802", "label": "PHTH 6802", "shape": "dot", "size": 12, "title": "Causal Inference 2"}, {"color": "lightblue", "id": "PHTH 6810", "label": "PHTH 6810", "shape": "dot", "size": 12, "title": "Survival Analysis"}, {"color": "lightblue", "id": "PHTH 6820", "label": "PHTH 6820", "shape": "dot", "size": 12, "title": "Design and Analysis of Clinical Trials"}, {"color": "lightblue", "id": "PHTH 6830", "label": "PHTH 6830", "shape": "dot", "size": 12, "title": "Generalized Linear Models"}, {"color": "lightblue", "id": "PHTH 6880", "label": "PHTH 6880", "shape": "dot", "size": 12, "title": "Statistical Consultancy"}, {"color": "lightblue", "id": "PHTH 6910", "label": "PHTH 6910", "shape": "dot", "size": 12, "title": "Public Health Capstone"}, {"color": "lightblue", "id": "PHTH 6962", "label": "PHTH 6962", "shape": "dot", "size": 12, "title": "Elective"}, {"color": "lightblue", "id": "PHTH 6966", "label": "PHTH 6966", "shape": "dot", "size": 12, "title": "Practicum"}, {"color": "lightblue", "id": "PHTH 7101", "label": "PHTH 7101", "shape": "dot", "size": 12, "title": "Qualitative Research Design"}, {"color": "lightblue", "id": "PHTH 7102", "label": "PHTH 7102", "shape": "dot", "size": 12, "title": "Qualitative Data Analysis"}, {"color": "lightblue", "id": "PHTH 7103", "label": "PHTH 7103", "shape": "dot", "size": 12, "title": "Mixed Methods Research"}, {"color": "lightblue", "id": "PHTH 7976", "label": "PHTH 7976", "shape": "dot", "size": 12, "title": "Directed Study"}, {"color": "lightblue", "id": "PHTH 8960", "label": "PHTH 8960", "shape": "dot", "size": 12, "title": "Exam Preparation\u2014Doctoral"}, {"color": "lightblue", "id": "PHTH 8984", "label": "PHTH 8984", "shape": "dot", "size": 12, "title": "Research"}, {"color": "lightblue", "id": "PHTH 8986", "label": "PHTH 8986", "shape": "dot", "size": 12, "title": "Research"}, {"color": "lightblue", "id": "PHTH 9000", "label": "PHTH 9000", "shape": "dot", "size": 12, "title": "PhD Candidacy Achieved"}, {"color": "lightblue", "id": "PHTH 9990", "label": "PHTH 9990", "shape": "dot", "size": 12, "title": "Dissertation Term 1"}, {"color": "lightblue", "id": "PHTH 9991", "label": "PHTH 9991", "shape": "dot", "size": 12, "title": "Dissertation Term 2"}, {"color": "lightblue", "id": "PHTH 9996", "label": "PHTH 9996", "shape": "dot", "size": 12, "title": "Dissertation Continuation"}, {"color": "lightblue", "id": "ENGW 3302", "label": "ENGW 3302", "shape": "dot", "size": 12, "title": ""}, {"color": "lightblue", "id": "ENGW 3304", "label": "ENGW 3304", "shape": "dot", "size": 12, "title": ""}, {"color": "lightblue", "id": "ENGW 3306", "label": "ENGW 3306", "shape": "dot", "size": 12, "title": ""}, {"color": "lightblue", "id": "ENGW 3307", "label": "ENGW 3307", "shape": "dot", "size": 12, "title": ""}, {"color": "lightblue", "id": "ENGW 3308", "label": "ENGW 3308", "shape": "dot", "size": 12, "title": ""}, {"color": "lightblue", "id": "ENGW 3314", "label": "ENGW 3314", "shape": "dot", "size": 12, "title": ""}, {"color": "lightblue", "id": "ENGW 3315", "label": "ENGW 3315", "shape": "dot", "size": 12, "title": ""}, {"color": "lightblue", "id": "CRIM 3700", "label": "CRIM 3700", "shape": "dot", "size": 12, "title": ""}, {"color": "lightblue", "id": "ECON 2350", "label": "ECON 2350", "shape": "dot", "size": 12, "title": ""}, {"color": "lightblue", "id": "ENVR 2500", "label": "ENVR 2500", "shape": "dot", "size": 12, "title": ""}, {"color": "lightblue", "id": "INSH 3102", "label": "INSH 3102", "shape": "dot", "size": 12, "title": ""}, {"color": "lightblue", "id": "MATH 2280", "label": "MATH 2280", "shape": "dot", "size": 12, "title": ""}, {"color": "lightblue", "id": "MATH 3081", "label": "MATH 3081", "shape": "dot", "size": 12, "title": ""}, {"color": "lightblue", "id": "MGSC 2301", "label": "MGSC 2301", "shape": "dot", "size": 12, "title": ""}, {"color": "lightblue", "id": "NRSG 5120", "label": "NRSG 5120", "shape": "dot", "size": 12, "title": ""}, {"color": "lightblue", "id": "POLS 2400", "label": "POLS 2400", "shape": "dot", "size": 12, "title": ""}, {"color": "lightblue", "id": "PSYC 2320", "label": "PSYC 2320", "shape": "dot", "size": 12, "title": ""}, {"color": "lightblue", "id": "SOCL 2320", "label": "SOCL 2320", "shape": "dot", "size": 12, "title": ""}, {"color": "lightblue", "id": "CRIM 3600", "label": "CRIM 3600", "shape": "dot", "size": 12, "title": ""}, {"color": "lightblue", "id": "INSH 3101", "label": "INSH 3101", "shape": "dot", "size": 12, "title": ""}, {"color": "lightblue", "id": "SOCL 2321", "label": "SOCL 2321", "shape": "dot", "size": 12, "title": ""}, {"color": "lightblue", "id": "ENGW 1102", "label": "ENGW 1102", "shape": "dot", "size": 12, "title": ""}, {"color": "lightblue", "id": "ENGW 1111", "label": "ENGW 1111", "shape": "dot", "size": 12, "title": ""}, {"color": "lightblue", "id": "ENGW 1113", "label": "ENGW 1113", "shape": "dot", "size": 12, "title": ""}, {"color": "lightblue", "id": "ENGW 1114", "label": "ENGW 1114", "shape": "dot", "size": 12, "title": ""}, {"color": "lightblue", "id": "ENGL 1102", "label": "ENGL 1102", "shape": "dot", "size": 12, "title": ""}, {"color": "lightblue", "id": "ENGL 1111", "label": "ENGL 1111", "shape": "dot", "size": 12, "title": ""}, {"color": "lightblue", "id": "MATH 5010", "label": "MATH 5010", "shape": "dot", "size": 12, "title": ""}, {"color": "lightblue", "id": "INSH 5603", "label": "INSH 5603", "shape": "dot", "size": 12, "title": ""}, {"color": "lightblue", "id": "INSH 7101", "label": "INSH 7101", "shape": "dot", "size": 12, "title": ""}]);
+                  edges = new vis.DataSet([{"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "PHTH 1260", "to": "PHTH 2515"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "PHTH 1260", "to": "PHTH 4511"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "PHTH 1261", "to": "PHTH 2515"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "PHTH 1261", "to": "PHTH 4511"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "PHTH 2210", "to": "PHTH 4202"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "PHTH 2350", "to": "PHTH 4120"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "PHTH 2351", "to": "PHTH 4120"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "PHTH 2515", "to": "PHTH 4515"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "PHTH 4202", "to": "PHTH 4602"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "PHTH 4540", "to": "PHTH 5560"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "PHTH 5202", "to": "PHTH 6202"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "PHTH 5202", "to": "PHTH 6224"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "PHTH 5210", "to": "PHTH 6210"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "PHTH 5210", "to": "PHTH 6224"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "PHTH 5210", "to": "PHTH 6400"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "PHTH 5540", "to": "PHTH 5560"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "PHTH 5603", "to": "PHTH 7102"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "PHTH 6202", "to": "PHTH 6800"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "PHTH 6210", "to": "PHTH 6440"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "PHTH 6400", "to": "PHTH 6410"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "PHTH 6800", "to": "PHTH 6802"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "PHTH 6801", "to": "PHTH 6802"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "PHTH 6830", "to": "PHTH 6880"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "PHTH 6966", "to": "PHTH 6910"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "PHTH 7101", "to": "PHTH 7102"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "PHTH 9000", "to": "PHTH 9990"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "PHTH 9990", "to": "PHTH 9991"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "PHTH 9991", "to": "PHTH 9996"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "ENGW 3302", "to": "PHTH 4120"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "ENGW 3302", "to": "PHTH 4515"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "ENGW 3302", "to": "PHTH 4540"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "ENGW 3304", "to": "PHTH 4120"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "ENGW 3304", "to": "PHTH 4515"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "ENGW 3304", "to": "PHTH 4540"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "ENGW 3306", "to": "PHTH 4120"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "ENGW 3306", "to": "PHTH 4515"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "ENGW 3306", "to": "PHTH 4540"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "ENGW 3307", "to": "PHTH 4120"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "ENGW 3307", "to": "PHTH 4515"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "ENGW 3307", "to": "PHTH 4540"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "ENGW 3308", "to": "PHTH 4120"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "ENGW 3308", "to": "PHTH 4515"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "ENGW 3308", "to": "PHTH 4540"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "ENGW 3314", "to": "PHTH 4120"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "ENGW 3314", "to": "PHTH 4515"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "ENGW 3314", "to": "PHTH 4540"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "ENGW 3315", "to": "PHTH 4120"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "ENGW 3315", "to": "PHTH 4515"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "ENGW 3315", "to": "PHTH 4540"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "CRIM 3700", "to": "PHTH 4202"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "ECON 2350", "to": "PHTH 4202"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "ENVR 2500", "to": "PHTH 4202"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "INSH 3102", "to": "PHTH 4202"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "MATH 2280", "to": "PHTH 4202"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "MATH 3081", "to": "PHTH 4202"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "MGSC 2301", "to": "PHTH 4202"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "NRSG 5120", "to": "PHTH 4202"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "POLS 2400", "to": "PHTH 4202"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "PSYC 2320", "to": "PHTH 4202"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "SOCL 2320", "to": "PHTH 4202"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "CRIM 3600", "to": "PHTH 4602"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "INSH 3101", "to": "PHTH 4602"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "SOCL 2321", "to": "PHTH 4602"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "ENGW 1102", "to": "PHTH 5540"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "ENGW 1111", "to": "PHTH 5540"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "ENGW 1113", "to": "PHTH 5540"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "ENGW 1114", "to": "PHTH 5540"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "ENGL 1102", "to": "PHTH 5540"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "ENGL 1111", "to": "PHTH 5540"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "MATH 5010", "to": "PHTH 6880"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "INSH 5603", "to": "PHTH 7102"}, {"arrowStrikethrough": false, "arrows": "to", "color": "gray", "from": "INSH 7101", "to": "PHTH 7102"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "forceAtlas2Based": {
+            "avoidOverlap": 0,
+            "centralGravity": 0.01,
+            "damping": 0.4,
+            "gravitationalConstant": -50,
+            "springConstant": 0.08,
+            "springLength": 100
+        },
+        "solver": "forceAtlas2Based",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
